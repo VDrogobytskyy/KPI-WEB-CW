@@ -10,8 +10,12 @@ main{
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                 url('./photos/hero_h1_photo.jpg') no-repeat center center;
     background-size: cover;
-    padding: 80px 300px;
+    padding: 140px 300px;
     border-radius: 40px;
     color: white !important;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.7)
+}
+
+.header-color {
+  background-color: white;
 }

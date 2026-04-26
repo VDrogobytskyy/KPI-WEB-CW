@@ -30,6 +30,11 @@ function App() {
             </Col>
           </Row>
         </Container>
+        <Container className="header-color">
+          <p>
+            Here will be new text....
+          </p>
+        </Container>
       </main>
       <Footer />
     </div >
