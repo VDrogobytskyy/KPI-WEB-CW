@@ -11,7 +11,9 @@ import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
-function HomePageDonut() {
+function HomePageDonut({ variant = 'dark' }) {
+  const isDark = variant === 'dark'
+  const labelColor = isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.72)'
 
     const data = {
     labels: ['Protein', 'Fat', 'Carbohydrates'],
@@ -24,7 +26,7 @@ function HomePageDonut() {
           '#d4a20b',
           '#268bd2',
         ],
-        borderColor: 'white',
+        borderColor: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.10)',
         borderWidth: 1,
       },
     ],
@@ -32,11 +34,12 @@ function HomePageDonut() {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'bottom',
         labels: {
-          color: '#ffffff',
+          color: labelColor,
           font: { size: 18}
         },
       },
@@ -45,9 +48,13 @@ function HomePageDonut() {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
-      <h3 style={{ color: 'rgb(255, 255, 255)', textAlign: 'center' }}>Nutrition Statistics</h3>
-      <Doughnut data={data} options={options} />
+    <div className="chart-block">
+      <div className="chart-block-head chart-block-head--center">
+        <h3 className={`chart-title ${isDark ? 'chart-title--dark' : 'chart-title--light'}`}>Nutrition statistics</h3>
+      </div>
+      <div className="chart-canvas chart-canvas--donut">
+        <Doughnut data={data} options={options} />
+      </div>
     </div>
   );
 }

@@ -25,9 +25,9 @@ function Footer() {
           <Col md={4} className="text-md-end">
             <h5 style={{ color: '#eee8d5' }}>Follow Us</h5>
             <div className="fs-4 mb-3">
-              <a href="#" className="me-3" style={{ color: '#268bd2' }}><i className="fab fa-github"></i></a>
-              <a href="#" className="me-3" style={{ color: '#268bd2' }}><i className="fab fa-instagram"></i></a>
-              <a href="#" style={{ color: '#268bd2' }}><i className="fab fa-twitter"></i></a>
+              <a href="https://github.com" className="me-3" style={{ color: '#268bd2' }} aria-label="GitHub"><i className="fab fa-github"></i></a>
+              <a href="https://instagram.com" className="me-3" style={{ color: '#268bd2' }} aria-label="Instagram"><i className="fab fa-instagram"></i></a>
+              <a href="https://twitter.com" style={{ color: '#268bd2' }} aria-label="Twitter"><i className="fab fa-twitter"></i></a>
             </div>
             <p style={{ fontSize: '0.8rem' }}>support@calorietracker.com</p>
           </Col>
