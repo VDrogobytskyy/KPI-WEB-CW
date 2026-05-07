@@ -2,10 +2,10 @@ import { Container, Image, Row, Col } from 'react-bootstrap'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
-import MainHomePage from './components/MainHomePage';
 import photo_for_h2 from './photos/photo_for_h2.png'
 import HomePageCalories from './components/HomePageCalories'
 import HomePageActivity from './components/HomePageActivity';
+import HomePageDonut from './components/HomePageDonut';
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
             </Col>
           </Row>
         </Container>
-        <Container className="header-color">
+        <Container className="header-color my-5">
           <Row className="header-color">
             <Col>
               <div className="black-text">
@@ -45,6 +45,23 @@ function App() {
             </Col>
             <Col md={6} className="ms-auto">
               <HomePageActivity />
+            </Col>
+          </Row>
+        </Container>
+        <Container className="my-5">
+          <Row>
+            <Col md={6} className="mr-auto">
+              <HomePageDonut />
+            </Col>
+            <Col md={6}>
+              <div className="text-color my-5">
+                <p style={{ textAlign: 'center', fontSize: '1.8rem' }}>
+                  Achieving your fitness goals starts with understanding what fuels your body. 
+                  Track your protein, fats, and carbohydrates in real-time to ensure every meal brings you closer to your peak performance. 
+                  By visualizing your daily intake, you can transform complex data into actionable habits that last a lifetime. 
+                  Balance isn't just a goal — it's a lifestyle.
+                </p>
+              </div>
             </Col>
           </Row>
         </Container>
