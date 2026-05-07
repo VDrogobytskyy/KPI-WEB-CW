@@ -12,7 +12,7 @@ function Header() {
                         <Nav className="ms-auto">
                             <Nav.Link href="/Profile"><i className="fas fa-user-plus"></i>Sing up</Nav.Link>
                             <Nav.Link href="/login"><i className="fas fa-user"></i>Log in</Nav.Link>
-                            <Nav.Link href="/Home"><i className="fas fa-home"></i>Home page</Nav.Link>
+                            {/* <Nav.Link href="/Home"><i className="fas fa-home"></i>Home page</Nav.Link> */}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

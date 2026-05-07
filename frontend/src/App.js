@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import MainHomePage from './components/MainHomePage';
 import photo_for_h2 from './photos/photo_for_h2.png'
 import HomePageCalories from './components/HomePageCalories'
+import HomePageActivity from './components/HomePageActivity';
 
 function App() {
   return (
@@ -31,9 +32,21 @@ function App() {
           </Row>
         </Container>
         <Container className="header-color">
-          <p>
-            Here will be new text....
-          </p>
+          <Row className="header-color">
+            <Col>
+              <div className="black-text">
+                <p style={{ textAlign: 'center-left', fontSize: '1.8rem' }}>
+                  Every workout brings you closer to your goals. 
+                  Track your activity, record every training session, and monitor your progress with detailed real-time statistics.
+                  Interactive monthly charts help you visualize your consistency, analyze your performance, 
+                  and stay motivated throughout your fitness journey.
+                </p>
+              </div>
+            </Col>
+            <Col md={6} className="ms-auto">
+              <HomePageActivity />
+            </Col>
+          </Row>
         </Container>
       </main>
       <Footer />

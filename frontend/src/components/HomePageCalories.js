@@ -66,7 +66,7 @@ function HomePageCalories() {
     return (
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', padding: '20px', color: 'white' }}>
             <div style={{ width: '450px', color: 'white' }}>
-                <h3 style={{ color: 'white' }}>Dynamic (Per month)</h3>
+                <h3 style={{ color: 'white' }}>Calorie burning dynamic</h3>
                 <Line data={lineData} options={options} />
             </div>
         </div>

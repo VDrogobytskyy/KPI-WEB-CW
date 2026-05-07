@@ -6,6 +6,10 @@ main{
   color: white;
 }
 
+.black-text{
+  color: black;
+}
+
 .h1-background {
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                 url('./photos/hero_h1_photo.jpg') no-repeat center center;
