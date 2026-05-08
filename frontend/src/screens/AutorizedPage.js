@@ -1,3 +1,4 @@
+// src/screens/AutorizedPage.js
 import React, { useMemo, useState } from 'react'
 
 import {
@@ -14,6 +15,7 @@ import {
   Table,
   InputGroup,
   Card,
+  Spinner,
 } from 'react-bootstrap'
 
 import {
@@ -84,12 +86,12 @@ function AutorizedPage() {
   // UI state
   const [activeTab, setActiveTab] = useState('dashboard')
 
-  // Modals (scaffolding)
+  // Modals
   const [showMealModal, setShowMealModal] = useState(false)
   const [showWorkoutModal, setShowWorkoutModal] = useState(false)
   const [showFoodSearchModal, setShowFoodSearchModal] = useState(false)
 
-  // Forms (scaffolding)
+  // Forms
   const [mealForm, setMealForm] = useState({
     calories: '',
     protein: '',
@@ -112,6 +114,32 @@ function AutorizedPage() {
     to: '',
     groupBy: 'day',
   })
+
+  // Food search state (REAL SEARCH)
+  const [foodLoading, setFoodLoading] = useState(false)
+  const [foodError, setFoodError] = useState('')
+  const [foodResults, setFoodResults] = useState([])
+
+  async function runFoodSearch() {
+    const q = foodSearchForm.query.trim()
+    if (!q) return
+
+    setFoodError('')
+    setFoodLoading(true)
+    try {
+      const res = await fetch(`/api/foods/search/?q=${encodeURIComponent(q)}&pageSize=10`)
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.detail || 'Search failed')
+      }
+      setFoodResults(Array.isArray(data?.foods) ? data.foods : [])
+    } catch (e) {
+      setFoodResults([])
+      setFoodError(e?.message || 'Search failed')
+    } finally {
+      setFoodLoading(false)
+    }
+  }
 
   const hasData = meals.length > 0 || workouts.length > 0
 
@@ -414,7 +442,7 @@ function AutorizedPage() {
 
                 <div className="chart-card">
                   <h3 className="chart-title chart-title--dark" style={{ marginBottom: 12 }}>
-                    Food search (UI only)
+                    Food search (UI + API)
                   </h3>
 
                   <InputGroup className="mb-3">
@@ -422,32 +450,53 @@ function AutorizedPage() {
                       value={foodSearchForm.query}
                       onChange={(e) => setFoodSearchForm((p) => ({ ...p, query: e.target.value }))}
                       placeholder="Search product name, e.g. banana"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          runFoodSearch()
+                        }
+                      }}
                     />
-                    <Button variant="info" disabled>
-                      Search (will call API)
+                    <Button variant="info" onClick={runFoodSearch} disabled={foodLoading || !foodSearchForm.query.trim()}>
+                      {foodLoading ? (
+                        <>
+                          <Spinner animation="border" size="sm" className="me-2" />
+                          Searching
+                        </>
+                      ) : (
+                        'Search'
+                      )}
                     </Button>
                   </InputGroup>
 
-                  <Alert variant="secondary" className="mb-3">
-                    Results will be shown here after USDA integration. For now it’s a placeholder.
-                  </Alert>
+                  {foodError && <Alert variant="danger">{foodError}</Alert>}
 
                   <Table responsive bordered hover size="sm" style={{ color: 'rgba(255,255,255,0.88)' }}>
                     <thead>
                       <tr>
-                        <th>Name</th>
+                        <th>Description</th>
                         <th>Brand</th>
-                        <th>kcal/100g</th>
-                        <th>P/F/C</th>
-                        <th style={{ width: 160 }}>Actions</th>
+                        <th>Type</th>
+                        <th style={{ width: 110 }}>FDC ID</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td colSpan={5} style={{ opacity: 0.8 }}>
-                          No results yet.
-                        </td>
-                      </tr>
+                      {foodResults.length === 0 ? (
+                        <tr>
+                          <td colSpan={4} style={{ opacity: 0.8 }}>
+                            {foodLoading ? 'Loading…' : 'No results yet.'}
+                          </td>
+                        </tr>
+                      ) : (
+                        foodResults.map((f) => (
+                          <tr key={String(f.fdcId)}>
+                            <td>{f.description || '-'}</td>
+                            <td>{f.brandOwner || '-'}</td>
+                            <td>{f.dataType || '-'}</td>
+                            <td>{f.fdcId}</td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </Table>
                 </div>
@@ -734,52 +783,74 @@ function AutorizedPage() {
         </section>
       </Container>
 
-      {/* Food search modal (UI scaffold) */}
-      <Modal show={showFoodSearchModal} onHide={() => setShowFoodSearchModal(false)} centered>
+      {/* Food search modal (NOW WORKS) */}
+      <Modal show={showFoodSearchModal} onHide={() => setShowFoodSearchModal(false)} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Search food (USDA)</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Alert variant="secondary" className="mb-3">
-            UI scaffold only. Later this will call your API and create/cache a <code>Food</code> record.
+            This calls backend endpoint <code>/api/foods/search/?q=...</code>. Make sure <code>USDA_API_KEY</code> is set on the server.
           </Alert>
 
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Query</Form.Label>
-              <Form.Control
-                value={foodSearchForm.query}
-                onChange={(e) => setFoodSearchForm((p) => ({ ...p, query: e.target.value }))}
-                placeholder="e.g. banana"
-              />
-            </Form.Group>
+          <InputGroup className="mb-3">
+            <Form.Control
+              value={foodSearchForm.query}
+              onChange={(e) => setFoodSearchForm((p) => ({ ...p, query: e.target.value }))}
+              placeholder="e.g. banana"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  runFoodSearch()
+                }
+              }}
+            />
+            <Button variant="info" onClick={runFoodSearch} disabled={foodLoading || !foodSearchForm.query.trim()}>
+              {foodLoading ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  Searching
+                </>
+              ) : (
+                'Search'
+              )}
+            </Button>
+          </InputGroup>
 
-            <Table bordered hover size="sm">
-              <thead>
+          {foodError && <Alert variant="danger">{foodError}</Alert>}
+
+          <Table bordered hover responsive size="sm">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Brand</th>
+                <th>Type</th>
+                <th style={{ width: 110 }}>FDC ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {foodResults.length === 0 ? (
                 <tr>
-                  <th>Result</th>
-                  <th style={{ width: 140 }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={{ opacity: 0.8 }}>Results will appear here.</td>
-                  <td>
-                    <Button size="sm" variant="info" disabled>
-                      Select
-                    </Button>
+                  <td colSpan={4} style={{ opacity: 0.8 }}>
+                    {foodLoading ? 'Loading…' : 'No results yet.'}
                   </td>
                 </tr>
-              </tbody>
-            </Table>
-          </Form>
+              ) : (
+                foodResults.map((f) => (
+                  <tr key={String(f.fdcId)}>
+                    <td>{f.description || '-'}</td>
+                    <td>{f.brandOwner || '-'}</td>
+                    <td>{f.dataType || '-'}</td>
+                    <td>{f.fdcId}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </Table>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowFoodSearchModal(false)}>
             Close
-          </Button>
-          <Button variant="info" disabled>
-            Search (will call API)
           </Button>
         </Modal.Footer>
       </Modal>
