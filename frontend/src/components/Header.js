@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 function Header() {
     return (
-        <header>
+        <header className="header">
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
                     <LinkContainer to='/'>

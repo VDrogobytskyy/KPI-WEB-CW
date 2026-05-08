@@ -25,6 +25,7 @@ main{
 
 .app-shell{
   position: relative;
+  padding: 100px 0 0;
 }
 
 .hero{
@@ -279,4 +280,10 @@ main{
     transform: none;
     opacity: 1;
   }
+}
+
+.header{
+  position: fixed;
+  width: 100%;
+  z-index: 100;
 }

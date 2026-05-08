@@ -9,7 +9,7 @@ import Reveal from '../components/Reveal'
 
 function HomePage() {
   return (
-    <main className="py-3 app-shell">
+    <main className="app-shell">
         <Container>
           <section className="hero">
             <Reveal className="hero-inner">
