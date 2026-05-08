@@ -9,9 +9,7 @@ function Header() {
         <header className="header">
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
-                    <LinkContainer to='/'>
-                        <Navbar.Brand>Web Calorie Tracker</Navbar.Brand>
-                    </LinkContainer>
+                    <Navbar.Brand href="/">Web Calorie Tracker</Navbar.Brand>
                     
                     <div className="navbar-brand-centered" style={{
                         position: 'absolute',
