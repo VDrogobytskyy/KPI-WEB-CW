@@ -140,6 +140,7 @@ function AutorizedPage() {
     const totals = m?.totals || {}
     return {
       id: m.id,
+      eatenAt: m.eaten_at,
       dateKey: dayKey(new Date(m.eaten_at)),
       calories: sumNumber(totals.kcal),
       protein: sumNumber(totals.protein),
@@ -153,6 +154,7 @@ function AutorizedPage() {
     const first = Array.isArray(w.entries) && w.entries.length > 0 ? w.entries[0] : null
     return {
       id: w.id,
+      startedAt: w.started_at,
       dateKey: dayKey(new Date(w.started_at)),
       type: first?.name_snapshot || 'Workout',
       minutes: sumNumber(totals.minutes || w.duration_minutes),
@@ -243,11 +245,30 @@ function AutorizedPage() {
 
   const dashboardRange = useMemo(() => {
     const to = new Date()
-    const from = me?.date_joined ? new Date(me.date_joined) : new Date(to)
+    const firstMeal = meals.length ? meals[meals.length - 1] : null
+    const firstWorkout = workouts.length ? workouts[workouts.length - 1] : null
+
+    // meals/workouts are stored newest-first; last element is the earliest in our current list
+    const candidates = []
+    if (firstMeal?.eatenAt) candidates.push(new Date(firstMeal.eatenAt))
+    if (firstWorkout?.startedAt) candidates.push(new Date(firstWorkout.startedAt))
+
+    let from = null
+    for (const d of candidates) {
+      if (Number.isNaN(d.getTime())) continue
+      if (!from || d < from) from = d
+    }
+
+    // If no data yet, keep a sensible default so charts don't break
+    if (!from) {
+      const { labels, keys } = lastNDaysLabels(7)
+      return { from: null, to, groupBy: 'day', labels, keys }
+    }
+
     const groupBy = autoGroupBy(from, to)
     const { labels, keys } = rangeLabels(from, to, groupBy)
     return { from, to, groupBy, labels, keys }
-  }, [me?.date_joined])
+  }, [meals, workouts])
 
   const dataByDay = useMemo(() => {
     const groupBy = dashboardRange.groupBy
@@ -802,7 +823,7 @@ function AutorizedPage() {
                     barData={barData}
                     donutData={donutData}
                     burnProgressData={burnProgressData}
-                    rangeLabel={me?.date_joined ? `From ${dayKey(new Date(me.date_joined))} to today` : ''}
+                    rangeLabel={dashboardRange.from ? `All time: ${dayKey(dashboardRange.from)} to today` : ''}
                     commonOptionsDark={commonOptionsDark}
                     donutOptionsDark={donutOptionsDark}
                     progressDonutOptionsDark={progressDonutOptionsDark}
