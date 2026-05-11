@@ -160,17 +160,6 @@ function ProfileTab({ me, onSave, saving, saveError }) {
           </div>
         </div>
       </Col>
-
-      <Col lg={4}>
-        <div className="chart-card">
-          <h3 className="chart-title chart-title--dark" style={{ marginBottom: 12 }}>
-            Token auth
-          </h3>
-          <Alert variant="secondary" className="mb-0">
-            Private endpoints use <code>Authorization: Bearer &lt;token&gt;</code>.
-          </Alert>
-        </div>
-      </Col>
     </Row>
   )
 }
