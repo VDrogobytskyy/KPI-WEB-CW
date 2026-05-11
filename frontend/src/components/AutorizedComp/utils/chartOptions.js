@@ -22,3 +22,13 @@ export const donutOptionsDark = {
   },
   cutout: '0%',
 }
+
+export const progressDonutOptionsDark = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: { enabled: true },
+  },
+  cutout: '72%',
+}

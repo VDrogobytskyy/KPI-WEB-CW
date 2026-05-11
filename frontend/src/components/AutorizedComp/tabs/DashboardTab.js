@@ -9,15 +9,17 @@ function DashboardTab({
   lineData,
   barData,
   donutData,
+  burnProgressData,
+  rangeLabel,
   commonOptionsDark,
   donutOptionsDark,
+  progressDonutOptionsDark,
 }) {
   return (
     <>
       {!hasData && (
         <Alert variant="info" className="mb-4">
-          No user data yet. Charts show empty scales. Use “Add meal” / “Add workout” to create mock entries
-          (backend integration comes later).
+          No entries yet. Add a meal or workout to populate the dashboard.
         </Alert>
       )}
 
@@ -59,7 +61,10 @@ function DashboardTab({
           <div className="chart-card">
             <div className="chart-block">
               <div className="chart-block-head">
-                <h3 className="chart-title chart-title--dark">Calories consumed (7 days)</h3>
+                <h3 className="chart-title chart-title--dark">Calories consumed</h3>
+                {rangeLabel && (
+                  <div style={{ opacity: 0.8, fontSize: 12, marginTop: -6 }}>{rangeLabel}</div>
+                )}
               </div>
               <div className="chart-canvas">
                 <Line data={lineData} options={commonOptionsDark} />
@@ -72,7 +77,10 @@ function DashboardTab({
           <div className="chart-card">
             <div className="chart-block">
               <div className="chart-block-head">
-                <h3 className="chart-title chart-title--dark">Calories burned (7 days)</h3>
+                <h3 className="chart-title chart-title--dark">Calories burned</h3>
+                {rangeLabel && (
+                  <div style={{ opacity: 0.8, fontSize: 12, marginTop: -6 }}>{rangeLabel}</div>
+                )}
               </div>
               <div className="chart-canvas">
                 <Bar data={barData} options={commonOptionsDark} />
@@ -89,7 +97,10 @@ function DashboardTab({
           <div className="chart-card">
             <div className="chart-block">
               <div className="chart-block-head chart-block-head--center">
-                <h3 className="chart-title chart-title--dark">Macros (today)</h3>
+                <h3 className="chart-title chart-title--dark">Macros</h3>
+                {rangeLabel && (
+                  <div style={{ opacity: 0.8, fontSize: 12, marginTop: -6 }}>{rangeLabel}</div>
+                )}
               </div>
               <div className="chart-canvas chart-canvas--donut">
                 <Doughnut data={donutData} options={donutOptionsDark} />
@@ -99,26 +110,14 @@ function DashboardTab({
         </Col>
 
         <Col lg={6}>
-          <h2 className="section-title">What the API will provide</h2>
-          <p className="section-lead">
-            These blocks map directly to endpoints (no backend wiring yet). Use this as a UI-ready blueprint.
-          </p>
-          <div className="feature-grid">
-            <div className="feature-card">
-              <div className="feature-title">Foods</div>
-              <div className="feature-text">Search USDA and cache products.</div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-title">Meals</div>
-              <div className="feature-text">Create meals with items and macros.</div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-title">Activities</div>
-              <div className="feature-text">Log workouts, time, calories burned.</div>
-            </div>
-            <div className="feature-card">
-              <div className="feature-title">Analytics</div>
-              <div className="feature-text">Period filters for charts (day/week/month).</div>
+          <div className="chart-card">
+            <div className="chart-block">
+              <div className="chart-block-head">
+                <h3 className="chart-title chart-title--dark">Burn progress</h3>
+              </div>
+              <div className="chart-canvas chart-canvas--donut">
+                <Doughnut data={burnProgressData} options={progressDonutOptionsDark} />
+              </div>
             </div>
           </div>
         </Col>

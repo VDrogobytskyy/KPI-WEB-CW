@@ -17,8 +17,8 @@ function Footer() {
             <h5 style={{ color: '#eee8d5' }}>Quick Links</h5>
             <ul className="list-unstyled">
               <li><a href="/" style={{ color: '#2aa198', textDecoration: 'none' }}>Home</a></li>
-              <li><a href="/login" style={{ color: '#2aa198', textDecoration: 'none' }}>Log In</a></li>
-              <li><a href="/profile" style={{ color: '#2aa198', textDecoration: 'none' }}>Profile</a></li>
+              <li><a href="/login" style={{ color: '#2aa198', textDecoration: 'none' }}>Log in</a></li>
+              <li><a href="/app?tab=profile" style={{ color: '#2aa198', textDecoration: 'none' }}>Profile</a></li>
             </ul>
           </Col>
 

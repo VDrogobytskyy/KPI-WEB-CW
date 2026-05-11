@@ -11,6 +11,8 @@ function FoodSearchModal({
   loading,
   error,
   results,
+  onPickFood,
+  pickingId,
 }) {
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
@@ -20,7 +22,7 @@ function FoodSearchModal({
 
       <Modal.Body>
         <Alert variant="secondary" className="mb-3">
-          This calls backend endpoint <code>/api/foods/search/?q=...</code>.
+          Search USDA, then add an item to a meal (it will be cached in your DB).
         </Alert>
 
         <InputGroup className="mb-3">
@@ -56,12 +58,13 @@ function FoodSearchModal({
               <th>Brand</th>
               <th>Type</th>
               <th style={{ width: 110 }}>FDC ID</th>
+              <th style={{ width: 120 }} />
             </tr>
           </thead>
           <tbody>
             {results.length === 0 ? (
               <tr>
-                <td colSpan={4} style={{ opacity: 0.8 }}>
+                <td colSpan={5} style={{ opacity: 0.8 }}>
                   {loading ? 'Loading…' : 'No results yet.'}
                 </td>
               </tr>
@@ -72,6 +75,16 @@ function FoodSearchModal({
                   <td>{f.brandOwner || '-'}</td>
                   <td>{f.dataType || '-'}</td>
                   <td>{f.fdcId}</td>
+                  <td>
+                    <Button
+                      size="sm"
+                      variant="info"
+                      onClick={() => onPickFood && onPickFood(f)}
+                      disabled={!onPickFood || pickingId === String(f.fdcId)}
+                    >
+                      {pickingId === String(f.fdcId) ? 'Adding…' : 'Add'}
+                    </Button>
+                  </td>
                 </tr>
               ))
             )}

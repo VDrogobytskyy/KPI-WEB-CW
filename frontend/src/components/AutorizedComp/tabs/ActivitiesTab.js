@@ -1,25 +1,12 @@
 import React from 'react'
-import { Button, Table, Alert } from 'react-bootstrap'
+import { Button, Table } from 'react-bootstrap'
 
-function ActivitiesTab({ workouts, onOpenWorkoutModal }) {
+function ActivitiesTab({ workouts, onOpenWorkoutModal, onDeleteWorkout, deletingId }) {
   return (
     <>
-      <div className="callout mb-3">
-        <div className="callout-title">Endpoints scaffold</div>
-        <div className="callout-text">
-          Planned:
-          <div style={{ marginTop: 8 }}>
-            <div><code>GET /api/activities/?from=YYYY-MM-DD&to=YYYY-MM-DD</code></div>
-            <div><code>POST /api/activities/</code></div>
-            <div><code>PATCH /api/activities/:id</code></div>
-            <div><code>DELETE /api/activities/:id</code></div>
-          </div>
-        </div>
-      </div>
-
       <div className="chart-card">
         <div className="chart-block-head">
-          <h3 className="chart-title chart-title--dark">Workout entries (mock)</h3>
+          <h3 className="chart-title chart-title--dark">Workout entries</h3>
           <Button variant="info" size="sm" onClick={onOpenWorkoutModal}>
             Add workout
           </Button>
@@ -32,12 +19,13 @@ function ActivitiesTab({ workouts, onOpenWorkoutModal }) {
               <th>Type</th>
               <th>Minutes</th>
               <th>Calories burned</th>
+              <th style={{ width: 110 }} />
             </tr>
           </thead>
           <tbody>
             {workouts.length === 0 ? (
               <tr>
-                <td colSpan={4} style={{ opacity: 0.8 }}>
+                <td colSpan={5} style={{ opacity: 0.8 }}>
                   No workouts yet.
                 </td>
               </tr>
@@ -48,15 +36,21 @@ function ActivitiesTab({ workouts, onOpenWorkoutModal }) {
                   <td>{w.type}</td>
                   <td>{w.minutes}</td>
                   <td>{w.caloriesBurned}</td>
+                  <td>
+                    <Button
+                      size="sm"
+                      variant="outline-light"
+                      onClick={() => onDeleteWorkout && onDeleteWorkout(w.id)}
+                      disabled={!onDeleteWorkout || deletingId === String(w.id)}
+                    >
+                      {deletingId === String(w.id) ? 'Deleting…' : 'Delete'}
+                    </Button>
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </Table>
-
-        <Alert variant="secondary" className="mb-0">
-          Later this table will be populated from <code>GET /api/activities/</code>.
-        </Alert>
       </div>
     </>
   )
