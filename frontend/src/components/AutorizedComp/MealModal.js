@@ -137,14 +137,17 @@ function MealModal({
             <tr>
               <th>Item</th>
               <th style={{ width: 120 }}>Grams</th>
-              <th style={{ width: 110 }}>kcal</th>
+              <th style={{ width: 90 }}>kcal</th>
+              <th style={{ width: 90 }}>P</th>
+              <th style={{ width: 90 }}>F</th>
+              <th style={{ width: 90 }}>C</th>
               <th style={{ width: 80 }} />
             </tr>
           </thead>
           <tbody>
             {items.length === 0 ? (
               <tr>
-                <td colSpan={4} style={{ opacity: 0.8 }}>
+                <td colSpan={7} style={{ opacity: 0.8 }}>
                   No foods added yet.
                 </td>
               </tr>
@@ -179,6 +182,9 @@ function MealModal({
                     />
                   </td>
                   <td>{Math.round(it.kcal_total || 0)}</td>
+                  <td>{Math.round(it.protein_total || 0)}</td>
+                  <td>{Math.round(it.fat_total || 0)}</td>
+                  <td>{Math.round(it.carbs_total || 0)}</td>
                   <td>
                     <Button
                       size="sm"

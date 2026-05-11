@@ -10,6 +10,8 @@ function FoodsTab({
   results,
   onImport,
   importingId,
+  onAddToMeal,
+  addingId,
 }) {
   return (
     <>
@@ -51,7 +53,7 @@ function FoodsTab({
               <th>Brand</th>
               <th>Type</th>
               <th style={{ width: 110 }}>FDC ID</th>
-              <th style={{ width: 140 }}>Cache</th>
+              <th style={{ width: 220 }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -69,18 +71,29 @@ function FoodsTab({
                   <td>{f.dataType || '-'}</td>
                   <td>{f.fdcId}</td>
                   <td>
-                    {f.cached ? (
-                      <span style={{ opacity: 0.9 }}>Cached</span>
-                    ) : (
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                       <Button
                         size="sm"
-                        variant="outline-info"
-                        onClick={() => onImport && onImport(f)}
-                        disabled={!onImport || importingId === String(f.fdcId)}
+                        variant="info"
+                        onClick={() => onAddToMeal && onAddToMeal(f)}
+                        disabled={!onAddToMeal || addingId === String(f.fdcId)}
                       >
-                        {importingId === String(f.fdcId) ? 'Importing…' : 'Import'}
+                        {addingId === String(f.fdcId) ? 'Adding…' : 'Add to meal'}
                       </Button>
-                    )}
+
+                      {f.cached ? (
+                        <span style={{ opacity: 0.9, alignSelf: 'center' }}>Cached</span>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline-info"
+                          onClick={() => onImport && onImport(f)}
+                          disabled={!onImport || importingId === String(f.fdcId)}
+                        >
+                          {importingId === String(f.fdcId) ? 'Importing…' : 'Import'}
+                        </Button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))

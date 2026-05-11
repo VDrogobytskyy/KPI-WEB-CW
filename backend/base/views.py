@@ -249,10 +249,13 @@ def _nutrient_map_from_food_details(data):
         nutrient_by_id = {}
         for n in data.get("foodNutrients", []) or []:
             nutrient = n.get("nutrient") or {}
-            nutrient_id = nutrient.get("id")
+            nutrient_id = nutrient.get("id") or n.get("nutrientId")
             if nutrient_id is None:
                 continue
-            nutrient_by_id[int(nutrient_id)] = n.get("amount")
+            amount = n.get("amount")
+            if amount is None:
+                amount = n.get("value")
+            nutrient_by_id[int(nutrient_id)] = amount
 
         def num(nid):
             v = nutrient_by_id.get(nid)

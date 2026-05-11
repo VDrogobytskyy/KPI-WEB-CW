@@ -125,6 +125,7 @@ function AutorizedPage() {
   const [foodResults, setFoodResults] = useState([])
   const [importingFoodId, setImportingFoodId] = useState('')
   const [pickingFoodId, setPickingFoodId] = useState('')
+  const [addingFoodId, setAddingFoodId] = useState('')
 
   const [myFoodsQuery, setMyFoodsQuery] = useState('')
   const [myFoodsLoading, setMyFoodsLoading] = useState(false)
@@ -490,9 +491,18 @@ function AutorizedPage() {
   async function handlePickFoodForMeal(f) {
     if (!f?.fdcId) return
     setMealError('')
+    // used from both modal + tab
     setPickingFoodId(String(f.fdcId))
+    setAddingFoodId(String(f.fdcId))
     try {
       const food = await importUsdaFood(f.fdcId)
+      const kcal100 = sumNumber(food.kcal_per_100g)
+      const p100 = sumNumber(food.protein_per_100g)
+      const f100 = sumNumber(food.fat_per_100g)
+      const c100 = sumNumber(food.carbs_per_100g)
+      if (!kcal100 && !p100 && !f100 && !c100) {
+        throw new Error('No nutrition data for this USDA item (missing per-100g values). Try another item or add as custom food.')
+      }
       const grams = 100
       const factor = grams / 100
       setMealItems((prev) => [
@@ -501,14 +511,14 @@ function AutorizedPage() {
           food_id: food.id,
           name_snapshot: food.name,
           grams: String(grams),
-          kcal_per_100g: sumNumber(food.kcal_per_100g),
-          protein_per_100g: sumNumber(food.protein_per_100g),
-          fat_per_100g: sumNumber(food.fat_per_100g),
-          carbs_per_100g: sumNumber(food.carbs_per_100g),
-          kcal_total: sumNumber(food.kcal_per_100g) * factor,
-          protein_total: sumNumber(food.protein_per_100g) * factor,
-          fat_total: sumNumber(food.fat_per_100g) * factor,
-          carbs_total: sumNumber(food.carbs_per_100g) * factor,
+          kcal_per_100g: kcal100,
+          protein_per_100g: p100,
+          fat_per_100g: f100,
+          carbs_per_100g: c100,
+          kcal_total: kcal100 * factor,
+          protein_total: p100 * factor,
+          fat_total: f100 * factor,
+          carbs_total: c100 * factor,
         },
       ])
       if (!mealEatenAt) {
@@ -521,6 +531,7 @@ function AutorizedPage() {
       setMealError(e?.response?.data?.detail || e?.message || 'Failed to add food')
     } finally {
       setPickingFoodId('')
+      setAddingFoodId('')
     }
   }
 
@@ -808,6 +819,8 @@ function AutorizedPage() {
                     results={foodResults}
                     onImport={handleImportFood}
                     importingId={importingFoodId}
+                    onAddToMeal={handlePickFoodForMeal}
+                    addingId={addingFoodId}
                 />
               </Tab>
 
