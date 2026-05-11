@@ -389,6 +389,18 @@ function AutorizedPage() {
     }
   }, [hasData, macros.carbs, macros.fat, macros.protein])
 
+  const dashboardTotals = useMemo(() => {
+    const kcalIn = dataByDay.caloriesIn.reduce((a, b) => a + sumNumber(b), 0)
+    const kcalOut = dataByDay.caloriesOut.reduce((a, b) => a + sumNumber(b), 0)
+    return {
+      kcalIn,
+      kcalOut,
+      protein: macros.protein,
+      fat: macros.fat,
+      carbs: macros.carbs,
+    }
+  }, [dataByDay.caloriesIn, dataByDay.caloriesOut, macros.carbs, macros.fat, macros.protein])
+
   const analyticsRange = useMemo(() => {
     if (!analyticsForm.from && !analyticsForm.to) {
       const { labels, keys } = lastNDaysLabels(7)
@@ -819,6 +831,7 @@ function AutorizedPage() {
                     hasData={hasData}
                     dataByDay={dataByDay}
                     macros={macros}
+                    totals={dashboardTotals}
                     lineData={lineData}
                     barData={barData}
                     donutData={donutData}

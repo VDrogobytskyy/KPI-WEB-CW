@@ -6,6 +6,7 @@ function DashboardTab({
   hasData,
   dataByDay,
   macros,
+  totals,
   lineData,
   barData,
   donutData,
@@ -15,6 +16,12 @@ function DashboardTab({
   donutOptionsDark,
   progressDonutOptionsDark,
 }) {
+  const kcalInTotal = totals?.kcalIn ?? 0
+  const kcalOutTotal = totals?.kcalOut ?? 0
+  const pTotal = totals?.protein ?? 0
+  const fTotal = totals?.fat ?? 0
+  const cTotal = totals?.carbs ?? 0
+
   return (
     <>
       {!hasData && (
@@ -26,28 +33,28 @@ function DashboardTab({
       <Row className="g-4">
         <Col lg={4}>
           <div className="feature-card">
-            <div className="feature-title">Calories in (today)</div>
+            <div className="feature-title">Calories in (all time)</div>
             <div className="feature-text">
-              {hasData ? `${Math.round(dataByDay.caloriesIn[dataByDay.caloriesIn.length - 1])} kcal` : '0 kcal'}
+              {hasData ? `${Math.round(kcalInTotal)} kcal` : '0 kcal'}
             </div>
           </div>
         </Col>
 
         <Col lg={4}>
           <div className="feature-card">
-            <div className="feature-title">Calories out (today)</div>
+            <div className="feature-title">Calories out (all time)</div>
             <div className="feature-text">
-              {hasData ? `${Math.round(dataByDay.caloriesOut[dataByDay.caloriesOut.length - 1])} kcal` : '0 kcal'}
+              {hasData ? `${Math.round(kcalOutTotal)} kcal` : '0 kcal'}
             </div>
           </div>
         </Col>
 
         <Col lg={4}>
           <div className="feature-card">
-            <div className="feature-title">Macro total (today)</div>
+            <div className="feature-title">Macro total (all time)</div>
             <div className="feature-text">
               {hasData
-                ? `P ${Math.round(macros.protein)} / F ${Math.round(macros.fat)} / C ${Math.round(macros.carbs)}`
+                ? `P ${Math.round(pTotal)} / F ${Math.round(fTotal)} / C ${Math.round(cTotal)}`
                 : 'P 0 / F 0 / C 0'}
             </div>
           </div>
