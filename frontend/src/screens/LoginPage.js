@@ -54,11 +54,7 @@ function LoginPage() {
         <section className="section section-dark" style={{ padding: 24 }}>
           <Reveal>
             <h2 className="section-title">{mode === 'login' ? 'Log in' : 'Register'}</h2>
-            <p className="section-lead">
-              {mode === 'login'
-                ? 'Use your Django user credentials to get a JWT token.'
-                : 'Create an account and you will be logged in automatically.'}
-            </p>
+
             {error && <Alert variant="danger">{error}</Alert>}
 
             <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
