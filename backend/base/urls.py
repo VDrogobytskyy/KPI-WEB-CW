@@ -17,4 +17,5 @@ urlpatterns = [
     path('activities/<int:pk>/', views.activityDetail, name='activity-detail'),
 
     path('users/profile/', views.me, name='me'),
+    
 ]

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import Reveal from '../components/Reveal'
 import { login as apiLogin, register as apiRegister } from '../api/client'
@@ -8,12 +8,22 @@ import { useI18n } from '../i18n'
 
 function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { t } = useI18n()
   const [mode, setMode] = useState('login') // login | register
   const [loginForm, setLoginForm] = useState({ username: '', password: '' })
   const [registerForm, setRegisterForm] = useState({ username: '', email: '', password: '' })
   const [loggingIn, setLoggingIn] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const nextMode = params.get('mode')
+    if (nextMode === 'register' || nextMode === 'login') {
+      setError('')
+      setMode(nextMode)
+    }
+  }, [location.search])
 
   async function handleLogin() {
     const username = loginForm.username.trim()

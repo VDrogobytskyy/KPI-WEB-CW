@@ -1,15 +1,44 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { Container, Row, Col, Button } from 'react-bootstrap'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import HomePageCalories from '../components/HomePageCalories'
 import HomePageActivity from '../components/HomePageActivity';
 import HomePageDonut from '../components/HomePageDonut';
 import Reveal from '../components/Reveal'
+import { useAuthToken } from '../auth/tokenStore'
 import { useI18n } from '../i18n'
 
 function HomePage() {
   const { t } = useI18n()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const token = useAuthToken()
+
+  const goToFeatures = useCallback(() => {
+    if (location.pathname !== '/') {
+      navigate({ pathname: '/', hash: '#features' })
+      return
+    }
+    const el = document.getElementById('features')
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [location.pathname, navigate])
+
+  React.useEffect(() => {
+    if (location.pathname !== '/') return
+    if (location.hash !== '#features') return
+    const el = document.getElementById('features')
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [location.pathname, location.hash])
+
+  function handleGetStarted() {
+    if (token) {
+      navigate({ pathname: '/app', search: '?tab=profile' })
+      return
+    }
+    navigate({ pathname: '/login', search: '?mode=register' })
+  }
 
   return (
     <main className="app-shell">
@@ -23,10 +52,10 @@ function HomePage() {
                 {t('heroSubtitle')}
               </p>
               <div className="hero-actions">
-                <Button size="lg" variant="info" className="hero-cta" href="/login">
+                <Button size="lg" variant="info" className="hero-cta" onClick={handleGetStarted}>
                   {t('getStarted')}
                 </Button>
-                <Button size="lg" variant="outline-light" className="hero-cta-secondary" href="#features">
+                <Button size="lg" variant="outline-light" className="hero-cta-secondary" onClick={goToFeatures}>
                   {t('seeFeatures')}
                 </Button>
               </div>

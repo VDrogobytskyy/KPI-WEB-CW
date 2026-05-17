@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Container, Tabs, Tab, Button, Alert, Spinner } from 'react-bootstrap'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   Chart as ChartJS,
@@ -68,6 +69,8 @@ ChartJS.register(
 
 function AutorizedPage() {
   const { t, locale, language } = useI18n()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   // Auth + user
   const [me, setMe] = useState(null)
@@ -205,9 +208,13 @@ function AutorizedPage() {
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
+    const params = new URLSearchParams(location.search)
     const tab = params.get('tab')
     if (tab) setActiveTab(tab)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search])
+
+  useEffect(() => {
     bootstrap()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -832,7 +839,17 @@ function AutorizedPage() {
         />
         <section className="section section-dark">
           <Reveal>
-            <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k || 'dashboard')} className="mb-3">
+            <Tabs
+              activeKey={activeTab}
+              onSelect={(k) => {
+                const next = k || 'dashboard'
+                setActiveTab(next)
+                const params = new URLSearchParams(location.search)
+                params.set('tab', next)
+                navigate({ pathname: '/app', search: `?${params.toString()}` }, { replace: true })
+              }}
+              className="mb-3"
+            >
               <Tab eventKey="dashboard" title={t('dashboard')}>
                 <DashboardTab
                     hasData={hasData}

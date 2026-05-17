@@ -14,7 +14,9 @@ function Header() {
         <header className="header">
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
-                    <Navbar.Brand href="/">{t('appName')}</Navbar.Brand>
+                    <LinkContainer to="/">
+                      <Navbar.Brand>{t('appName')}</Navbar.Brand>
+                    </LinkContainer>
                     
                     <div className="navbar-brand-centered" style={{
                         position: 'absolute',
@@ -51,9 +53,11 @@ function Header() {
                             </Form.Select>
                             {/* <Nav.Link href="/Profile"><i className="fas fa-user-plus"></i>Sing up</Nav.Link> */}
                             {hasToken ? (
-                              <Nav.Link href="/app?tab=profile">
-                                <i className="fas fa-user"></i>{t('profile')}
-                              </Nav.Link>
+                              <LinkContainer to={{ pathname: "/app", search: "?tab=profile" }}>
+                                <Nav.Link>
+                                  <i className="fas fa-user"></i>{t('profile')}
+                                </Nav.Link>
+                              </LinkContainer>
                             ) : (
                               <LinkContainer to='/login'>
                                   <Nav.Link><i className="fas fa-user"></i>{t('login')}</Nav.Link>

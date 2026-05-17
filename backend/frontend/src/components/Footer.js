@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 import { useI18n } from '../i18n'
 
 function Footer() {
@@ -19,9 +20,9 @@ function Footer() {
           <Col md={4} className="mb-md-0 text-md-center">
             <h5 style={{ color: '#eee8d5' }}>{t('quickLinks')}</h5>
             <ul className="list-unstyled">
-              <li><a href="/" style={{ color: '#2aa198', textDecoration: 'none' }}>{t('home')}</a></li>
-              <li><a href="/login" style={{ color: '#2aa198', textDecoration: 'none' }}>{t('login')}</a></li>
-              <li><a href="/app?tab=profile" style={{ color: '#2aa198', textDecoration: 'none' }}>{t('profile')}</a></li>
+              <li><Link to="/" style={{ color: '#2aa198', textDecoration: 'none' }}>{t('home')}</Link></li>
+              <li><Link to="/login" style={{ color: '#2aa198', textDecoration: 'none' }}>{t('login')}</Link></li>
+              <li><Link to={{ pathname: "/app", search: "?tab=profile" }} style={{ color: '#2aa198', textDecoration: 'none' }}>{t('profile')}</Link></li>
             </ul>
           </Col>
 
