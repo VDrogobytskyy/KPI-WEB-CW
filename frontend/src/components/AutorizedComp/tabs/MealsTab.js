@@ -1,25 +1,28 @@
 import React from 'react'
 import { Button, Table } from 'react-bootstrap'
+import { useI18n } from '../../../i18n'
 
 function MealsTab({ meals, onOpenMealModal, onDeleteMeal, deletingId }) {
+  const { t } = useI18n()
+
   return (
     <>
       <div className="chart-card">
         <div className="chart-block-head">
-          <h3 className="chart-title chart-title--dark">Meal entries</h3>
+          <h3 className="chart-title chart-title--dark">{t('mealEntries')}</h3>
           <Button variant="info" size="sm" onClick={onOpenMealModal}>
-            Add meal
+            {t('addMeal')}
           </Button>
         </div>
 
         <Table responsive bordered hover size="sm" style={{ color: 'rgba(255,255,255,0.88)' }}>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Calories</th>
-              <th>Protein</th>
-              <th>Fat</th>
-              <th>Carbs</th>
+              <th>{t('date')}</th>
+              <th>{t('calories')}</th>
+              <th>{t('protein')}</th>
+              <th>{t('fat')}</th>
+              <th>{t('carbs')}</th>
               <th style={{ width: 110 }} />
             </tr>
           </thead>
@@ -27,7 +30,7 @@ function MealsTab({ meals, onOpenMealModal, onDeleteMeal, deletingId }) {
             {meals.length === 0 ? (
               <tr>
                 <td colSpan={6} style={{ opacity: 0.8 }}>
-                  No meals yet.
+                  {t('noMealsYet')}
                 </td>
               </tr>
             ) : (
@@ -45,7 +48,7 @@ function MealsTab({ meals, onOpenMealModal, onDeleteMeal, deletingId }) {
                       onClick={() => onDeleteMeal && onDeleteMeal(m.id)}
                       disabled={!onDeleteMeal || deletingId === String(m.id)}
                     >
-                      {deletingId === String(m.id) ? 'Deleting…' : 'Delete'}
+                      {deletingId === String(m.id) ? t('deleting') : t('delete')}
                     </Button>
                   </td>
                 </tr>

@@ -287,3 +287,35 @@ main{
   width: 100%;
   z-index: 100;
 }
+
+.language-select{
+  width: auto;
+  min-width: 72px;
+  background-color: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.24);
+  color: #ffffff;
+}
+
+.language-select option{
+  color: #111111;
+}
+
+.analytics-date-control,
+.analytics-date-control:focus,
+.form-control[type="date"],
+.form-control[type="date"]:focus,
+.form-control[type="datetime-local"],
+.form-control[type="datetime-local"]:focus{
+  color: #111111 !important;
+  -webkit-text-fill-color: #111111 !important;
+}
+
+.analytics-date-control::-webkit-date-and-time-value,
+.analytics-date-control::-webkit-datetime-edit,
+.form-control[type="date"]::-webkit-date-and-time-value,
+.form-control[type="date"]::-webkit-datetime-edit,
+.form-control[type="datetime-local"]::-webkit-date-and-time-value,
+.form-control[type="datetime-local"]::-webkit-datetime-edit{
+  color: #111111 !important;
+  -webkit-text-fill-color: #111111 !important;
+}

@@ -1,18 +1,20 @@
 import React from 'react'
-import { Container, Navbar, Nav } from 'react-bootstrap'
+import { Container, Navbar, Nav, Form } from 'react-bootstrap'
 
 import { LinkContainer } from 'react-router-bootstrap'
 import { Link } from 'react-router-dom'
 import { useAuthToken } from '../auth/tokenStore'
+import { useI18n } from '../i18n'
 
 function Header() {
     const token = useAuthToken()
     const hasToken = Boolean(token)
+    const { language, languages, setLanguage, t } = useI18n()
     return (
         <header className="header">
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
-                    <Navbar.Brand href="/">Web Calorie Tracker</Navbar.Brand>
+                    <Navbar.Brand href="/">{t('appName')}</Navbar.Brand>
                     
                     <div className="navbar-brand-centered" style={{
                         position: 'absolute',
@@ -32,15 +34,29 @@ function Header() {
                     </div>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="ms-auto">
+                        <Nav className="ms-auto align-items-lg-center">
+                            <Form.Select
+                              size="sm"
+                              aria-label={t('language')}
+                              value={language}
+                              onChange={(e) => setLanguage(e.target.value)}
+                              className="me-lg-3 my-2 my-lg-0 language-select"
+                              style={{ width: '80px' }}
+                            >
+                              {languages.map((item) => (
+                                <option key={item.code} value={item.code}>
+                                  {item.shortLabel}
+                                </option>
+                              ))}
+                            </Form.Select>
                             {/* <Nav.Link href="/Profile"><i className="fas fa-user-plus"></i>Sing up</Nav.Link> */}
                             {hasToken ? (
                               <Nav.Link href="/app?tab=profile">
-                                <i className="fas fa-user"></i>Profile
+                                <i className="fas fa-user"></i>{t('profile')}
                               </Nav.Link>
                             ) : (
                               <LinkContainer to='/login'>
-                                  <Nav.Link><i className="fas fa-user"></i>Log in</Nav.Link>
+                                  <Nav.Link><i className="fas fa-user"></i>{t('login')}</Nav.Link>
                               </LinkContainer>
                             )}
 
@@ -48,12 +64,12 @@ function Header() {
                               <Nav.Link
                                 onClick={() => {
                                   localStorage.removeItem('authToken')
-                                  // keep UI in sync without relying on a full reload
+                           
                                   window.dispatchEvent(new Event('authTokenChanged'))
                                   window.location.href = '/'
                                 }}
                               >
-                                <i className="fas fa-sign-out-alt"></i>Log out
+                                <i className="fas fa-sign-out-alt"></i>{t('logout')}
                               </Nav.Link>
                             )}
                             

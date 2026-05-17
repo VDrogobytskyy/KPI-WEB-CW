@@ -21,7 +21,12 @@ import MealModal from '../components/AutorizedComp/MealModal'
 import WorkoutModal from '../components/AutorizedComp/WorkoutModal'
 
 import { dayKey, lastNDaysLabels, rangeLabels, sumNumber } from '../components/AutorizedComp/utils/dateUtils'
-import { commonOptionsDark, donutOptionsDark, progressDonutOptionsDark } from '../components/AutorizedComp/utils/chartOptions'
+import {
+  centerPercentPlugin,
+  commonOptionsDark,
+  donutOptionsDark,
+  progressDonutOptionsDark,
+} from '../components/AutorizedComp/utils/chartOptions'
 
 import DashboardTab from '../components/AutorizedComp/tabs/DashboardTab'
 import FoodsTab from '../components/AutorizedComp/tabs/FoodsTab'
@@ -30,6 +35,7 @@ import ActivitiesTab from '../components/AutorizedComp/tabs/ActivitiesTab'
 import AnalyticsTab from '../components/AutorizedComp/tabs/AnalyticsTab'
 import ProfileTab from '../components/AutorizedComp/tabs/ProfileTab'
 import MyFoodsTab, { EditFoodModal } from '../components/AutorizedComp/tabs/MyFoodsTab'
+import { useI18n } from '../i18n'
 
 import {
   logout as apiLogout,
@@ -61,6 +67,8 @@ ChartJS.register(
 )
 
 function AutorizedPage() {
+  const { t, locale, language } = useI18n()
+
   // Auth + user
   const [me, setMe] = useState(null)
   const [bootLoading, setBootLoading] = useState(true)
@@ -156,7 +164,7 @@ function AutorizedPage() {
       id: w.id,
       startedAt: w.started_at,
       dateKey: dayKey(new Date(w.started_at)),
-      type: first?.name_snapshot || 'Workout',
+      type: first?.name_snapshot || t('workout'),
       minutes: sumNumber(totals.minutes || w.duration_minutes),
       caloriesBurned: sumNumber(totals.kcal || w.total_kcal_burned),
     }
@@ -184,7 +192,7 @@ function AutorizedPage() {
       setWorkouts(Array.isArray(workoutsData) ? workoutsData.map(mapWorkout) : [])
       setMyFoods(Array.isArray(myFoodsData) ? myFoodsData : [])
     } catch (e) {
-      const msg = e?.response?.data?.detail || e?.message || 'Failed to load user data'
+      const msg = e?.response?.data?.detail || e?.message || t('failedLoadUserData')
       setBootError(msg)
       // 401/403 -> clear token to avoid infinite loops
       if (e?.response?.status === 401 || e?.response?.status === 403) {
@@ -215,7 +223,7 @@ function AutorizedPage() {
       setFoodResults(Array.isArray(data?.foods) ? data.foods : [])
     } catch (e) {
       setFoodResults([])
-      setFoodError(e?.response?.data?.detail || e?.message || 'Search failed')
+      setFoodError(e?.response?.data?.detail || e?.message || t('searchFailed'))
     } finally {
       setFoodLoading(false)
     }
@@ -261,14 +269,14 @@ function AutorizedPage() {
 
     // If no data yet, keep a sensible default so charts don't break
     if (!from) {
-      const { labels, keys } = lastNDaysLabels(7)
+      const { labels, keys } = lastNDaysLabels(7, locale)
       return { from: null, to, groupBy: 'day', labels, keys }
     }
 
     const groupBy = autoGroupBy(from, to)
-    const { labels, keys } = rangeLabels(from, to, groupBy)
+    const { labels, keys } = rangeLabels(from, to, groupBy, locale)
     return { from, to, groupBy, labels, keys }
-  }, [meals, workouts])
+  }, [locale, meals, workouts])
 
   const dataByDay = useMemo(() => {
     const groupBy = dashboardRange.groupBy
@@ -345,7 +353,7 @@ function AutorizedPage() {
     const burned = dataByDay.caloriesOut.reduce((a, b) => a + sumNumber(b), 0)
     if (!consumed) {
       return {
-        labels: ['Burned', 'Remaining'],
+        labels: [t('caloriesBurned'), t('notSet')],
         datasets: [
           {
             data: [0, 100],
@@ -361,7 +369,7 @@ function AutorizedPage() {
     const done = ratio >= 1
     const pct = Math.round(progress * 1000) / 10
     return {
-      labels: ['Burned', 'Remaining'],
+      labels: [t('caloriesBurned'), t('notSet')],
       datasets: [
         {
           data: [pct, Math.max(0, 100 - pct)],
@@ -370,14 +378,14 @@ function AutorizedPage() {
         },
       ],
     }
-  }, [dataByDay.caloriesIn, dataByDay.caloriesOut])
+  }, [dataByDay.caloriesIn, dataByDay.caloriesOut, t])
 
   const donutData = useMemo(() => {
     const p = hasData ? macros.protein : 0
     const f = hasData ? macros.fat : 0
     const c = hasData ? macros.carbs : 0
     return {
-      labels: ['Protein', 'Fat', 'Carbohydrates'],
+      labels: [t('protein'), t('fat'), t('carbs')],
       datasets: [
         {
           data: [p, f, c],
@@ -387,7 +395,7 @@ function AutorizedPage() {
         },
       ],
     }
-  }, [hasData, macros.carbs, macros.fat, macros.protein])
+  }, [hasData, macros.carbs, macros.fat, macros.protein, t])
 
   const dashboardTotals = useMemo(() => {
     const kcalIn = dataByDay.caloriesIn.reduce((a, b) => a + sumNumber(b), 0)
@@ -403,14 +411,14 @@ function AutorizedPage() {
 
   const analyticsRange = useMemo(() => {
     if (!analyticsForm.from && !analyticsForm.to) {
-      const { labels, keys } = lastNDaysLabels(7)
+      const { labels, keys } = lastNDaysLabels(7, locale)
       return { labels, keys, groupBy: 'day' }
     }
     const from = analyticsForm.from ? new Date(`${analyticsForm.from}T00:00:00`) : new Date()
     const to = analyticsForm.to ? new Date(`${analyticsForm.to}T00:00:00`) : new Date()
-    const { labels, keys } = rangeLabels(from, to, analyticsForm.groupBy || 'day')
+    const { labels, keys } = rangeLabels(from, to, analyticsForm.groupBy || 'day', locale)
     return { labels, keys, groupBy: analyticsForm.groupBy || 'day' }
-  }, [analyticsForm.from, analyticsForm.groupBy, analyticsForm.to])
+  }, [analyticsForm.from, analyticsForm.groupBy, analyticsForm.to, locale])
 
   const analyticsAgg = useMemo(() => {
     const groupBy = analyticsRange.groupBy
@@ -468,7 +476,7 @@ function AutorizedPage() {
     const burned = analyticsAgg.caloriesOut.reduce((a, b) => a + sumNumber(b), 0)
     if (!consumed) {
       return {
-        labels: ['Burned', 'Remaining'],
+        labels: [t('caloriesBurned'), t('notSet')],
         datasets: [
           {
             data: [0, 100],
@@ -484,7 +492,7 @@ function AutorizedPage() {
     const done = ratio >= 1
     const pct = Math.round(progress * 1000) / 10
     return {
-      labels: ['Burned', 'Remaining'],
+      labels: [t('caloriesBurned'), t('notSet')],
       datasets: [
         {
           data: [pct, Math.max(0, 100 - pct)],
@@ -493,7 +501,7 @@ function AutorizedPage() {
         },
       ],
     }
-  }, [analyticsAgg.caloriesIn, analyticsAgg.caloriesOut])
+  }, [analyticsAgg.caloriesIn, analyticsAgg.caloriesOut, t])
 
   const analyticsDonutData = useMemo(() => {
     const allowed = new Set(analyticsRange.keys)
@@ -509,7 +517,7 @@ function AutorizedPage() {
       carbs += sumNumber(meal.carbs)
     }
     return {
-      labels: ['Protein', 'Fat', 'Carbohydrates'],
+      labels: [t('protein'), t('fat'), t('carbs')],
       datasets: [
         {
           data: [protein, fat, carbs],
@@ -519,7 +527,7 @@ function AutorizedPage() {
         },
       ],
     }
-  }, [analyticsRange.groupBy, analyticsRange.keys, meals, toGroupKey])
+  }, [analyticsRange.groupBy, analyticsRange.keys, meals, t, toGroupKey])
 
   async function handlePickFoodForMeal(f) {
     if (!f?.fdcId) return
@@ -534,7 +542,7 @@ function AutorizedPage() {
       const f100 = sumNumber(food.fat_per_100g)
       const c100 = sumNumber(food.carbs_per_100g)
       if (!kcal100 && !p100 && !f100 && !c100) {
-        throw new Error('No nutrition data for this USDA item (missing per-100g values). Try another item or add as custom food.')
+        throw new Error(t('noNutritionData'))
       }
       const grams = 100
       const factor = grams / 100
@@ -561,7 +569,7 @@ function AutorizedPage() {
       setShowMealModal(true)
       setShowFoodSearchModal(false)
     } catch (e) {
-      setMealError(e?.response?.data?.detail || e?.message || 'Failed to add food')
+      setMealError(e?.response?.data?.detail || e?.message || t('failedAddFood'))
     } finally {
       setPickingFoodId('')
       setAddingFoodId('')
@@ -577,7 +585,7 @@ function AutorizedPage() {
       // mark cached locally
       setFoodResults((prev) => prev.map((p) => (String(p.fdcId) === String(f.fdcId) ? { ...p, cached: true } : p)))
     } catch (e) {
-      setFoodError(e?.response?.data?.detail || e?.message || 'Import failed')
+      setFoodError(e?.response?.data?.detail || e?.message || t('importFailed'))
     } finally {
       setImportingFoodId('')
     }
@@ -590,7 +598,7 @@ function AutorizedPage() {
       const data = await listFoods({ source: 'custom', search: myFoodsQuery.trim() || undefined })
       setMyFoods(Array.isArray(data) ? data : [])
     } catch (e) {
-      setMyFoodsError(e?.response?.data?.detail || e?.message || 'Failed to load foods')
+      setMyFoodsError(e?.response?.data?.detail || e?.message || t('failedLoadFoods'))
     } finally {
       setMyFoodsLoading(false)
     }
@@ -622,7 +630,7 @@ function AutorizedPage() {
       setMealEatenAt('')
       setShowMealModal(false)
     } catch (e) {
-      setMealError(e?.response?.data?.detail || e?.message || 'Failed to save meal')
+      setMealError(e?.response?.data?.detail || e?.message || t('failedSaveMeal'))
     } finally {
       setMealSaving(false)
     }
@@ -676,7 +684,7 @@ function AutorizedPage() {
       }
       setShowMealModal(true)
     } catch (e) {
-      setMealError(e?.response?.data?.detail || e?.message || 'Failed to create custom food')
+      setMealError(e?.response?.data?.detail || e?.message || t('failedCreateCustomFood'))
     } finally {
       setCustomFoodSaving(false)
     }
@@ -686,7 +694,7 @@ function AutorizedPage() {
     setWorkoutError('')
     setWorkoutSaving(true)
     try {
-      const type = String(workoutForm.type || '').trim() || 'Workout'
+      const type = String(workoutForm.type || '').trim() || t('workout')
       const minutes = sumNumber(workoutForm.minutes)
       const kcal = sumNumber(workoutForm.caloriesBurned)
       const startedAtIso = workoutStartedAt ? new Date(workoutStartedAt).toISOString() : new Date().toISOString()
@@ -708,7 +716,7 @@ function AutorizedPage() {
       setWorkoutStartedAt('')
       setShowWorkoutModal(false)
     } catch (e) {
-      setWorkoutError(e?.response?.data?.detail || e?.message || 'Failed to save workout')
+      setWorkoutError(e?.response?.data?.detail || e?.message || t('failedSaveWorkout'))
     } finally {
       setWorkoutSaving(false)
     }
@@ -748,7 +756,7 @@ function AutorizedPage() {
       setMe(updated)
       return updated
     } catch (e) {
-      setProfileError(e?.response?.data?.detail || e?.message || 'Failed to save profile')
+      setProfileError(e?.response?.data?.detail || e?.message || t('failedSaveProfile'))
       throw e
     } finally {
       setProfileSaving(false)
@@ -769,7 +777,7 @@ function AutorizedPage() {
       }
       setAnalyticsSummary(sum)
     } catch (e) {
-      setAnalyticsError(e?.message || 'Failed to compute analytics')
+      setAnalyticsError(e?.message || t('chooseCorrectRange'))
     } finally {
       setAnalyticsApplying(false)
     }
@@ -793,9 +801,8 @@ function AutorizedPage() {
         <Container>
           <section className="section section-dark" style={{ padding: 24 }}>
             <Reveal>
-              <h2 className="section-title">Not logged in</h2>
-              <p className="section-lead">Go to the log in page to access your dashboard.</p>
-              <Button variant="info" href="/login">Go to log in</Button>
+              <h2 className="section-title">{t('login')}</h2>
+              <Button variant="info" href="/login">{t('login')}</Button>
             </Reveal>
           </section>
         </Container>
@@ -826,7 +833,7 @@ function AutorizedPage() {
         <section className="section section-dark">
           <Reveal>
             <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k || 'dashboard')} className="mb-3">
-              <Tab eventKey="dashboard" title="Dashboard">
+              <Tab eventKey="dashboard" title={t('dashboard')}>
                 <DashboardTab
                     hasData={hasData}
                     dataByDay={dataByDay}
@@ -836,14 +843,15 @@ function AutorizedPage() {
                     barData={barData}
                     donutData={donutData}
                     burnProgressData={burnProgressData}
-                    rangeLabel={dashboardRange.from ? `All time: ${dayKey(dashboardRange.from)} to today` : ''}
+                    rangeLabel={dashboardRange.from ? `${dayKey(dashboardRange.from)} - ${new Date().toLocaleDateString(locale)}` : ''}
                     commonOptionsDark={commonOptionsDark}
                     donutOptionsDark={donutOptionsDark}
                     progressDonutOptionsDark={progressDonutOptionsDark}
+                    centerPercentPlugin={centerPercentPlugin}
                 />
               </Tab>
 
-              <Tab eventKey="foods" title="Foods (USDA)">
+              <Tab eventKey="foods" title={t('foodSearch')}>
                 <FoodsTab
                     query={foodSearchForm.query}
                     setQuery={(value) => setFoodSearchForm((p) => ({ ...p, query: value }))}
@@ -858,7 +866,7 @@ function AutorizedPage() {
                 />
               </Tab>
 
-              <Tab eventKey="myfoods" title="My foods">
+              <Tab eventKey="myfoods" title={t('myFoods')}>
                 <MyFoodsTab
                   query={myFoodsQuery}
                   setQuery={setMyFoodsQuery}
@@ -874,7 +882,7 @@ function AutorizedPage() {
                 />
               </Tab>
 
-              <Tab eventKey="meals" title="Meals">
+              <Tab eventKey="meals" title={t('meals')}>
                 <MealsTab
                     meals={meals}
                     onOpenMealModal={() => setShowMealModal(true)}
@@ -882,7 +890,7 @@ function AutorizedPage() {
                     deletingId={deletingMealId}
                 />
               </Tab>
-              <Tab eventKey="activities" title="Activities">
+              <Tab eventKey="activities" title={t('activities')}>
                 <ActivitiesTab
                     workouts={workouts}
                     onOpenWorkoutModal={() => setShowWorkoutModal(true)}
@@ -891,7 +899,7 @@ function AutorizedPage() {
                 />
               </Tab>
 
-              <Tab eventKey="analytics" title="Analytics">
+              <Tab eventKey="analytics" title={t('analytics')}>
                 <AnalyticsTab
                   analyticsForm={analyticsForm}
                   setAnalyticsForm={setAnalyticsForm}
@@ -906,10 +914,11 @@ function AutorizedPage() {
                   commonOptionsDark={commonOptionsDark}
                   donutOptionsDark={donutOptionsDark}
                   progressDonutOptionsDark={progressDonutOptionsDark}
+                  centerPercentPlugin={centerPercentPlugin}
                 />
               </Tab>
 
-              <Tab eventKey="profile" title="Profile">
+              <Tab eventKey="profile" title={t('profile')}>
                 <ProfileTab
                   me={me}
                   onSave={async (payload) => {
@@ -921,6 +930,8 @@ function AutorizedPage() {
                   }}
                   saving={profileSaving}
                   saveError={profileError}
+                  language={language}
+                  locale={locale}
                 />
               </Tab>
 
@@ -988,7 +999,7 @@ function AutorizedPage() {
             setEditFood(updated)
             setEditFoodOpen(false)
           } catch (e) {
-            setEditFoodError(e?.response?.data?.detail || e?.message || 'Failed to save')
+            setEditFoodError(e?.response?.data?.detail || e?.message || t('failedSaveProfile'))
           } finally {
             setEditFoodSaving(false)
           }
@@ -1001,7 +1012,7 @@ function AutorizedPage() {
             setMyFoods((prev) => prev.filter((p) => p.id !== food.id))
             setEditFoodOpen(false)
           } catch (e) {
-            setEditFoodError(e?.response?.data?.detail || e?.message || 'Failed to delete')
+            setEditFoodError(e?.response?.data?.detail || e?.message || t('failedLoadFoods'))
           } finally {
             setEditFoodSaving(false)
           }

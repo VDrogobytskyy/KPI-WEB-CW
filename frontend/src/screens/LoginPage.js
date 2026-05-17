@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom'
 
 import Reveal from '../components/Reveal'
 import { login as apiLogin, register as apiRegister } from '../api/client'
+import { useI18n } from '../i18n'
 
 function LoginPage() {
   const navigate = useNavigate()
+  const { t } = useI18n()
   const [mode, setMode] = useState('login') // login | register
   const [loginForm, setLoginForm] = useState({ username: '', password: '' })
   const [registerForm, setRegisterForm] = useState({ username: '', email: '', password: '' })
@@ -23,7 +25,7 @@ function LoginPage() {
       await apiLogin(username, password)
       navigate('/app')
     } catch (e) {
-      setError(e?.response?.data?.detail || e?.message || 'Login failed')
+      setError(e?.response?.data?.detail || e?.message || t('loginFailed'))
     } finally {
       setLoggingIn(false)
     }
@@ -40,7 +42,7 @@ function LoginPage() {
       await apiRegister({ username, email, password })
       navigate('/app')
     } catch (e) {
-      const detail = e?.response?.data?.detail || e?.message || 'Registration failed'
+      const detail = e?.response?.data?.detail || e?.message || t('registrationFailed')
       const errors = Array.isArray(e?.response?.data?.errors) ? e.response.data.errors.join(' ') : ''
       setError(errors ? `${detail} ${errors}` : detail)
     } finally {
@@ -53,8 +55,7 @@ function LoginPage() {
       <Container>
         <section className="section section-dark" style={{ padding: 24 }}>
           <Reveal>
-            <h2 className="section-title">{mode === 'login' ? 'Log in' : 'Register'}</h2>
-
+            <h2 className="section-title">{mode === 'login' ? t('login') : t('register')}</h2>
             {error && <Alert variant="danger">{error}</Alert>}
 
             <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
@@ -66,7 +67,7 @@ function LoginPage() {
                   setMode('login')
                 }}
               >
-                Log in
+                {t('login')}
               </Button>
               <Button
                 variant={mode === 'register' ? 'info' : 'outline-light'}
@@ -76,7 +77,7 @@ function LoginPage() {
                   setMode('register')
                 }}
               >
-                Register
+                {t('register')}
               </Button>
             </div>
 
@@ -85,7 +86,7 @@ function LoginPage() {
                 <>
                   <Col sm={12}>
                     <Form.Control
-                      placeholder="Username"
+                      placeholder={t('username')}
                       value={loginForm.username}
                       onChange={(e) => setLoginForm((p) => ({ ...p, username: e.target.value }))}
                     />
@@ -93,7 +94,7 @@ function LoginPage() {
                   <Col sm={12}>
                     <Form.Control
                       type="password"
-                      placeholder="Password"
+                      placeholder={t('password')}
                       value={loginForm.password}
                       onChange={(e) => setLoginForm((p) => ({ ...p, password: e.target.value }))}
                       onKeyDown={(e) => {
@@ -106,7 +107,7 @@ function LoginPage() {
                   </Col>
                   <Col sm={12}>
                     <Button variant="info" onClick={handleLogin} disabled={loggingIn}>
-                      {loggingIn ? 'Logging in…' : 'Log in'}
+                      {loggingIn ? t('loggingIn') : t('login')}
                     </Button>
                   </Col>
                 </>
@@ -114,14 +115,14 @@ function LoginPage() {
                 <>
                   <Col sm={12}>
                     <Form.Control
-                      placeholder="Username"
+                      placeholder={t('username')}
                       value={registerForm.username}
                       onChange={(e) => setRegisterForm((p) => ({ ...p, username: e.target.value }))}
                     />
                   </Col>
                   <Col sm={12}>
                     <Form.Control
-                      placeholder="Email (optional)"
+                      placeholder={t('optionalEmail')}
                       value={registerForm.email}
                       onChange={(e) => setRegisterForm((p) => ({ ...p, email: e.target.value }))}
                     />
@@ -129,7 +130,7 @@ function LoginPage() {
                   <Col sm={12}>
                     <Form.Control
                       type="password"
-                      placeholder="Password"
+                      placeholder={t('password')}
                       value={registerForm.password}
                       onChange={(e) => setRegisterForm((p) => ({ ...p, password: e.target.value }))}
                       onKeyDown={(e) => {
@@ -142,7 +143,7 @@ function LoginPage() {
                   </Col>
                   <Col sm={12}>
                     <Button variant="info" onClick={handleRegister} disabled={loggingIn}>
-                      {loggingIn ? 'Creating…' : 'Create account'}
+                      {loggingIn ? t('creating') : t('createAccount')}
                     </Button>
                   </Col>
                 </>

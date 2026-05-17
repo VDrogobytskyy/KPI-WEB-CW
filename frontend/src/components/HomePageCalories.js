@@ -13,6 +13,7 @@ import {
     ArcElement
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useI18n } from '../i18n'
 
 ChartJS.register(
     CategoryScale,
@@ -27,6 +28,7 @@ ChartJS.register(
 );
 
 function HomePageCalories({ variant = 'dark' }) {
+    const { t } = useI18n()
     const isDark = variant === 'dark'
     const tickColor = isDark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.75)'
     const gridColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.10)'
@@ -34,7 +36,7 @@ function HomePageCalories({ variant = 'dark' }) {
     const fillColor = isDark ? 'rgba(11, 184, 203, 0.35)' : 'rgba(11, 184, 203, 0.25)'
 
     const lineData = {
-        labels: ['March', 'April', 'May', 'June', 'July'],
+        labels: t('chartMonths'),
         datasets: [
             {
                 // label: 'Calories burned',
@@ -78,7 +80,7 @@ function HomePageCalories({ variant = 'dark' }) {
         <div className="chart-block">
             <div className="chart-block-head">
                 <h3 className={`chart-title ${isDark ? 'chart-title--dark' : 'chart-title--light'}`}>
-                    Calorie burning dynamic
+                    {t('calorieBurningDynamic')}
                 </h3>
             </div>
             <div className="chart-canvas">

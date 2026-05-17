@@ -1,6 +1,7 @@
 // src/components/AutorizedComp/FoodSearchModal.js
 import React from 'react'
 import { Modal, Alert, InputGroup, Form, Button, Spinner, Table } from 'react-bootstrap'
+import { useI18n } from '../../i18n'
 
 function FoodSearchModal({
   show,
@@ -14,22 +15,20 @@ function FoodSearchModal({
   onPickFood,
   pickingId,
 }) {
+  const { t } = useI18n()
+
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Search food (USDA)</Modal.Title>
+        <Modal.Title>{t('searchFoodUsda')}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        <Alert variant="secondary" className="mb-3">
-          Search USDA, then add an item to a meal (it will be cached in your DB).
-        </Alert>
-
         <InputGroup className="mb-3">
           <Form.Control
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g. banana"
+            placeholder={t('searchProductPlaceholder')}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault()
@@ -41,10 +40,10 @@ function FoodSearchModal({
             {loading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
-                Searching
+                {t('searching')}
               </>
             ) : (
-              'Search'
+              t('search')
             )}
           </Button>
         </InputGroup>
@@ -54,9 +53,9 @@ function FoodSearchModal({
         <Table bordered hover responsive size="sm">
           <thead>
             <tr>
-              <th>Description</th>
-              <th>Brand</th>
-              <th>Type</th>
+              <th>{t('description')}</th>
+              <th>{t('brand')}</th>
+              <th>{t('type')}</th>
               <th style={{ width: 110 }}>FDC ID</th>
               <th style={{ width: 120 }} />
             </tr>
@@ -65,7 +64,7 @@ function FoodSearchModal({
             {results.length === 0 ? (
               <tr>
                 <td colSpan={5} style={{ opacity: 0.8 }}>
-                  {loading ? 'Loading…' : 'No results yet.'}
+                  {loading ? t('loading') : t('noResultsYet')}
                 </td>
               </tr>
             ) : (
@@ -82,7 +81,7 @@ function FoodSearchModal({
                       onClick={() => onPickFood && onPickFood(f)}
                       disabled={!onPickFood || pickingId === String(f.fdcId)}
                     >
-                      {pickingId === String(f.fdcId) ? 'Adding…' : 'Add'}
+                      {pickingId === String(f.fdcId) ? t('adding') : t('add')}
                     </Button>
                   </td>
                 </tr>
@@ -93,7 +92,7 @@ function FoodSearchModal({
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>Close</Button>
+        <Button variant="secondary" onClick={onHide}>{t('close')}</Button>
       </Modal.Footer>
     </Modal>
   )

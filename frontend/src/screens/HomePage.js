@@ -1,30 +1,33 @@
 import React from 'react'
 
-import { Container, Row, Col, Button, Badge } from 'react-bootstrap'
+import { Container, Row, Col, Button } from 'react-bootstrap'
 
 import HomePageCalories from '../components/HomePageCalories'
 import HomePageActivity from '../components/HomePageActivity';
 import HomePageDonut from '../components/HomePageDonut';
 import Reveal from '../components/Reveal'
+import { useI18n } from '../i18n'
 
 function HomePage() {
+  const { t } = useI18n()
+
   return (
     <main className="app-shell">
         <Container>
           <section className="hero">
             <Reveal className="hero-inner">
               <h1 className="hero-title chart-title--dark">
-                Your personal dashboard for calorie tracking and nutritional insights.
+                {t('heroTitle')}
               </h1>
               <p className="hero-subtitle">
-                Track meals, visualize progress, and build habits that stick — with clean charts and a simple workflow.
+                {t('heroSubtitle')}
               </p>
               <div className="hero-actions">
                 <Button size="lg" variant="info" className="hero-cta" href="/login">
-                  Get started
+                  {t('getStarted')}
                 </Button>
                 <Button size="lg" variant="outline-light" className="hero-cta-secondary" href="#features">
-                  See features
+                  {t('seeFeatures')}
                 </Button>
               </div>
             </Reveal>
@@ -41,22 +44,22 @@ function HomePage() {
               </Col>
               <Col lg={6}>
                 <Reveal>
-                  <h2 className="section-title">Meals & calories</h2>
+                  <h2 className="section-title">{t('mealsCalories')}</h2>
                   <p className="section-lead">
-                    Easily track your meals, monitor your daily intake, and stay aware of your nutrition habits throughout the day.
+                    {t('mealsCaloriesText')}
                   </p>
                   <div className="feature-grid">
                     <div className="feature-card">
-                      <div className="feature-title">Quick logging</div>
-                      <div className="feature-text">Add meals in seconds and keep a clean daily timeline.</div>
+                      <div className="feature-title">{t('quickLogging')}</div>
+                      <div className="feature-text">{t('quickLoggingText')}</div>
                     </div>
                     <div className="feature-card">
-                      <div className="feature-title">Progress visuals</div>
-                      <div className="feature-text">Spot trends fast with interactive charts and readable stats.</div>
+                      <div className="feature-title">{t('progressVisuals')}</div>
+                      <div className="feature-text">{t('progressVisualsText')}</div>
                     </div>
                     <div className="feature-card">
-                      <div className="feature-title">Smarter decisions</div>
-                      <div className="feature-text">Turn data into actionable nutrition choices.</div>
+                      <div className="feature-title">{t('smarterDecisions')}</div>
+                      <div className="feature-text">{t('smarterDecisionsText')}</div>
                     </div>
                   </div>
                 </Reveal>
@@ -77,22 +80,22 @@ function HomePage() {
               </Col>
               <Col lg={6}>
                 <Reveal>
-                  <h2 className="section-title section-title--dark">Training activity</h2>
+                  <h2 className="section-title section-title--dark">{t('trainingActivity')}</h2>
                   <p className="section-lead section-lead--dark">
-                    Every workout brings you closer to your goals. Track sessions, monitor progress, and stay motivated with real-time stats.
+                    {t('trainingActivityText')}
                   </p>
                   <div className="feature-grid feature-grid--light">
                     <div className="feature-card feature-card--light">
-                      <div className="feature-title">Monthly insights</div>
-                      <div className="feature-text">See consistency at a glance and keep your streak alive.</div>
+                      <div className="feature-title">{t('monthlyInsights')}</div>
+                      <div className="feature-text">{t('monthlyInsightsText')}</div>
                     </div>
                     <div className="feature-card feature-card--light">
-                      <div className="feature-title">Simple goals</div>
-                      <div className="feature-text">Set targets and use the graph as a weekly checkpoint.</div>
+                      <div className="feature-title">{t('simpleGoals')}</div>
+                      <div className="feature-text">{t('simpleGoalsText')}</div>
                     </div>
                     <div className="feature-card feature-card--light">
-                      <div className="feature-title">Stay accountable</div>
-                      <div className="feature-text">Small wins add up — the dashboard makes them visible.</div>
+                      <div className="feature-title">{t('stayAccountable')}</div>
+                      <div className="feature-text">{t('stayAccountableText')}</div>
                     </div>
                   </div>
                 </Reveal>
@@ -113,13 +116,13 @@ function HomePage() {
               </Col>
               <Col lg={6}>
                 <Reveal>
-                  <h2 className="section-title">Macro balance</h2>
+                  <h2 className="section-title">{t('macroBalance')}</h2>
                   <p className="section-lead">
-                    Understanding what fuels your body is the fastest way to improve performance. Track protein, fats, and carbs in real time.
+                    {t('macroBalanceText')}
                   </p>
                   <div className="callout">
-                    <div className="callout-title">Balance isn’t a goal — it’s a system.</div>
-                    <div className="callout-text">Make nutrition decisions with confidence using clear, visual feedback.</div>
+                    <div className="callout-title">{t('balanceTitle')}</div>
+                    <div className="callout-text">{t('balanceText')}</div>
                   </div>
                 </Reveal>
               </Col>

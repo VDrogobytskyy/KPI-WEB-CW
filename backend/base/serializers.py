@@ -63,7 +63,7 @@ class MeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'name', 'isAdmin', 'profile', 'date_joined']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'name', 'isAdmin', 'profile', 'date_joined']
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile', None)

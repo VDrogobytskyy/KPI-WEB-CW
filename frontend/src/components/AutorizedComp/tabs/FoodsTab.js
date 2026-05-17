@@ -1,5 +1,6 @@
 import React from 'react'
 import { Alert, Table, InputGroup, Form, Button, Spinner } from 'react-bootstrap'
+import { useI18n } from '../../../i18n'
 
 function FoodsTab({
   query,
@@ -13,18 +14,20 @@ function FoodsTab({
   onAddToMeal,
   addingId,
 }) {
+  const { t } = useI18n()
+
   return (
     <>
       <div className="chart-card">
         <h3 className="chart-title chart-title--dark" style={{ marginBottom: 12 }}>
-          Food search (USDA)
+          {t('searchFoodUsda')}
         </h3>
 
         <InputGroup className="mb-3">
           <Form.Control
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search product name, e.g. banana"
+            placeholder={t('searchProductPlaceholder')}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault()
@@ -36,10 +39,10 @@ function FoodsTab({
             {loading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
-                Searching
+                {t('searching')}
               </>
             ) : (
-              'Search'
+              t('search')
             )}
           </Button>
         </InputGroup>
@@ -49,18 +52,18 @@ function FoodsTab({
         <Table responsive bordered hover size="sm" style={{ color: 'rgba(255,255,255,0.88)' }}>
           <thead>
             <tr>
-              <th>Description</th>
-              <th>Brand</th>
-              <th>Type</th>
+              <th>{t('description')}</th>
+              <th>{t('brand')}</th>
+              <th>{t('type')}</th>
               <th style={{ width: 110 }}>FDC ID</th>
-              <th style={{ width: 220 }}>Actions</th>
+              <th style={{ width: 220 }}>{t('actions')}</th>
             </tr>
           </thead>
           <tbody>
             {results.length === 0 ? (
               <tr>
                 <td colSpan={5} style={{ opacity: 0.8 }}>
-                  {loading ? 'Loading…' : 'No results yet.'}
+                  {loading ? t('loading') : t('noResultsYet')}
                 </td>
               </tr>
             ) : (
@@ -78,11 +81,11 @@ function FoodsTab({
                         onClick={() => onAddToMeal && onAddToMeal(f)}
                         disabled={!onAddToMeal || addingId === String(f.fdcId)}
                       >
-                        {addingId === String(f.fdcId) ? 'Adding…' : 'Add to meal'}
+                        {addingId === String(f.fdcId) ? t('adding') : t('addToMeal')}
                       </Button>
 
                       {f.cached ? (
-                        <span style={{ opacity: 0.9, alignSelf: 'center' }}>Cached</span>
+                        <span style={{ opacity: 0.9, alignSelf: 'center' }}>{t('cached')}</span>
                       ) : (
                         <Button
                           size="sm"
@@ -90,7 +93,7 @@ function FoodsTab({
                           onClick={() => onImport && onImport(f)}
                           disabled={!onImport || importingId === String(f.fdcId)}
                         >
-                          {importingId === String(f.fdcId) ? 'Importing…' : 'Import'}
+                          {importingId === String(f.fdcId) ? t('importing') : t('import')}
                         </Button>
                       )}
                     </div>

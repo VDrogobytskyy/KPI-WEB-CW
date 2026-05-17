@@ -12,14 +12,14 @@ export function dayKey(date) {
   return `${y}-${m}-${day}`
 }
 
-export function lastNDaysLabels(n) {
+export function lastNDaysLabels(n, locale = 'en-US') {
   const labels = []
   const keys = []
   const today = startOfDay(new Date())
   for (let i = n - 1; i >= 0; i--) {
     const d = new Date(today)
     d.setDate(d.getDate() - i)
-    labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
+    labels.push(d.toLocaleDateString(locale, { month: 'short', day: 'numeric' }))
     keys.push(dayKey(d))
   }
   return { labels, keys }
@@ -29,7 +29,7 @@ export function clampDateToStartOfDay(date) {
   return startOfDay(date)
 }
 
-export function rangeLabels(fromDate, toDate, groupBy = 'day') {
+export function rangeLabels(fromDate, toDate, groupBy = 'day', locale = 'en-US') {
   const labels = []
   const keys = []
   if (!fromDate || !toDate) return { labels, keys }
@@ -56,7 +56,7 @@ export function rangeLabels(fromDate, toDate, groupBy = 'day') {
     while (d <= to) {
       const k = monthKey(d)
       keys.push(k)
-      labels.push(d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }))
+      labels.push(d.toLocaleDateString(locale, { month: 'short', year: '2-digit' }))
       d.setMonth(d.getMonth() + 1)
       d.setDate(1)
     }
@@ -71,7 +71,7 @@ export function rangeLabels(fromDate, toDate, groupBy = 'day') {
     while (d <= to) {
       const k = addKey(d)
       keys.push(k)
-      labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
+      labels.push(d.toLocaleDateString(locale, { month: 'short', day: 'numeric' }))
       d.setDate(d.getDate() + 7)
     }
     return { labels, keys }
@@ -81,7 +81,7 @@ export function rangeLabels(fromDate, toDate, groupBy = 'day') {
   const d = new Date(from)
   while (d <= to) {
     keys.push(addKey(d))
-    labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
+    labels.push(d.toLocaleDateString(locale, { month: 'short', day: 'numeric' }))
     d.setDate(d.getDate() + 1)
   }
   return { labels, keys }

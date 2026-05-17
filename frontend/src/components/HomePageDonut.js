@@ -8,15 +8,17 @@ import {
 } from 'chart.js';
 
 import { Doughnut } from 'react-chartjs-2';
+import { useI18n } from '../i18n'
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 function HomePageDonut({ variant = 'dark' }) {
+  const { t } = useI18n()
   const isDark = variant === 'dark'
   const labelColor = isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.72)'
 
     const data = {
-    labels: ['Protein', 'Fat', 'Carbohydrates'],
+    labels: [t('protein'), t('fat'), t('carbs')],
     datasets: [
       {
         //label: 'Грамів',
@@ -50,7 +52,7 @@ function HomePageDonut({ variant = 'dark' }) {
   return (
     <div className="chart-block">
       <div className="chart-block-head chart-block-head--center">
-        <h3 className={`chart-title ${isDark ? 'chart-title--dark' : 'chart-title--light'}`}>Nutrition statistics</h3>
+        <h3 className={`chart-title ${isDark ? 'chart-title--dark' : 'chart-title--light'}`}>{t('nutritionStatistics')}</h3>
       </div>
       <div className="chart-canvas chart-canvas--donut">
         <Doughnut data={data} options={options} />

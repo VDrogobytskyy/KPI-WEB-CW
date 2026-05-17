@@ -1,24 +1,27 @@
 import React from 'react'
 import { Button, Table } from 'react-bootstrap'
+import { useI18n } from '../../../i18n'
 
 function ActivitiesTab({ workouts, onOpenWorkoutModal, onDeleteWorkout, deletingId }) {
+  const { t } = useI18n()
+
   return (
     <>
       <div className="chart-card">
         <div className="chart-block-head">
-          <h3 className="chart-title chart-title--dark">Workout entries</h3>
+          <h3 className="chart-title chart-title--dark">{t('workoutEntries')}</h3>
           <Button variant="info" size="sm" onClick={onOpenWorkoutModal}>
-            Add workout
+            {t('addWorkout')}
           </Button>
         </div>
 
         <Table responsive bordered hover size="sm" style={{ color: 'rgba(255,255,255,0.88)' }}>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Minutes</th>
-              <th>Calories burned</th>
+              <th>{t('date')}</th>
+              <th>{t('type')}</th>
+              <th>{t('minutes')}</th>
+              <th>{t('caloriesBurned')}</th>
               <th style={{ width: 110 }} />
             </tr>
           </thead>
@@ -26,7 +29,7 @@ function ActivitiesTab({ workouts, onOpenWorkoutModal, onDeleteWorkout, deleting
             {workouts.length === 0 ? (
               <tr>
                 <td colSpan={5} style={{ opacity: 0.8 }}>
-                  No workouts yet.
+                  {t('noWorkoutsYet')}
                 </td>
               </tr>
             ) : (
@@ -43,7 +46,7 @@ function ActivitiesTab({ workouts, onOpenWorkoutModal, onDeleteWorkout, deleting
                       onClick={() => onDeleteWorkout && onDeleteWorkout(w.id)}
                       disabled={!onDeleteWorkout || deletingId === String(w.id)}
                     >
-                      {deletingId === String(w.id) ? 'Deleting…' : 'Delete'}
+                      {deletingId === String(w.id) ? t('deleting') : t('delete')}
                     </Button>
                   </td>
                 </tr>

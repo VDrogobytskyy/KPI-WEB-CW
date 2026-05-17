@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col, Alert } from 'react-bootstrap'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
+import { useI18n } from '../../../i18n'
 
 function DashboardTab({
   hasData,
@@ -15,7 +16,9 @@ function DashboardTab({
   commonOptionsDark,
   donutOptionsDark,
   progressDonutOptionsDark,
+  centerPercentPlugin,
 }) {
+  const { t } = useI18n()
   const kcalInTotal = totals?.kcalIn ?? 0
   const kcalOutTotal = totals?.kcalOut ?? 0
   const pTotal = totals?.protein ?? 0
@@ -26,32 +29,32 @@ function DashboardTab({
     <>
       {!hasData && (
         <Alert variant="info" className="mb-4">
-          No entries yet. Add a meal or workout to populate the dashboard.
+          {t('dashboardEmpty')}
         </Alert>
       )}
 
       <Row className="g-4">
         <Col lg={4}>
           <div className="feature-card">
-            <div className="feature-title">Calories in (all time)</div>
+            <div className="feature-title">{t('caloriesInAllTime')}</div>
             <div className="feature-text">
-              {hasData ? `${Math.round(kcalInTotal)} kcal` : '0 kcal'}
+              {hasData ? `${Math.round(kcalInTotal)} ${t('kcal')}` : `0 ${t('kcal')}`}
             </div>
           </div>
         </Col>
 
         <Col lg={4}>
           <div className="feature-card">
-            <div className="feature-title">Calories out (all time)</div>
+            <div className="feature-title">{t('caloriesOutAllTime')}</div>
             <div className="feature-text">
-              {hasData ? `${Math.round(kcalOutTotal)} kcal` : '0 kcal'}
+              {hasData ? `${Math.round(kcalOutTotal)} ${t('kcal')}` : `0 ${t('kcal')}`}
             </div>
           </div>
         </Col>
 
         <Col lg={4}>
           <div className="feature-card">
-            <div className="feature-title">Macro total (all time)</div>
+            <div className="feature-title">{t('macroTotalAllTime')}</div>
             <div className="feature-text">
               {hasData
                 ? `P ${Math.round(pTotal)} / F ${Math.round(fTotal)} / C ${Math.round(cTotal)}`
@@ -68,7 +71,7 @@ function DashboardTab({
           <div className="chart-card">
             <div className="chart-block">
               <div className="chart-block-head">
-                <h3 className="chart-title chart-title--dark">Calories consumed</h3>
+                <h3 className="chart-title chart-title--dark">{t('caloriesConsumed')}</h3>
                 {rangeLabel && (
                   <div style={{ opacity: 0.8, fontSize: 12, marginTop: -6 }}>{rangeLabel}</div>
                 )}
@@ -84,7 +87,7 @@ function DashboardTab({
           <div className="chart-card">
             <div className="chart-block">
               <div className="chart-block-head">
-                <h3 className="chart-title chart-title--dark">Calories burned</h3>
+                <h3 className="chart-title chart-title--dark">{t('caloriesBurned')}</h3>
                 {rangeLabel && (
                   <div style={{ opacity: 0.8, fontSize: 12, marginTop: -6 }}>{rangeLabel}</div>
                 )}
@@ -104,7 +107,7 @@ function DashboardTab({
           <div className="chart-card">
             <div className="chart-block">
               <div className="chart-block-head chart-block-head--center">
-                <h3 className="chart-title chart-title--dark">Macros</h3>
+                <h3 className="chart-title chart-title--dark">{t('macros')}</h3>
                 {rangeLabel && (
                   <div style={{ opacity: 0.8, fontSize: 12, marginTop: -6 }}>{rangeLabel}</div>
                 )}
@@ -120,10 +123,14 @@ function DashboardTab({
           <div className="chart-card">
             <div className="chart-block">
               <div className="chart-block-head">
-                <h3 className="chart-title chart-title--dark">Burn progress</h3>
+                <h3 className="chart-title chart-title--dark">{t('burnProgress')}</h3>
               </div>
               <div className="chart-canvas chart-canvas--donut">
-                <Doughnut data={burnProgressData} options={progressDonutOptionsDark} />
+                <Doughnut
+                  data={burnProgressData}
+                  options={progressDonutOptionsDark}
+                  plugins={centerPercentPlugin ? [centerPercentPlugin] : []}
+                />
               </div>
             </div>
           </div>
